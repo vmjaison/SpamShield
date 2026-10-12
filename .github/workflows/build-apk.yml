@@ -41,14 +41,36 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
 
-      - name: Make Gradle wrapper executable
+      - name: Inspect Android project
         run: |
-          chmod +x gradlew
+          echo "Current directory:"
+          pwd
+
+          echo "Files:"
+          ls -la
+
+          echo "Gradle build files:"
+          find . -maxdepth 3 \
+            \( -name "settings.gradle" \
+            -o -name "settings.gradle.kts" \
+            -o -name "build.gradle" \
+            -o -name "build.gradle.kts" \
+            -o -name "gradlew" \) -print
 
       - name: Build Debug APK
         run: |
-          ./gradlew assembleDebug --stacktrace
+          if [ -f ./gradlew ]; then
+            echo "Using Gradle wrapper"
+            chmod +x ./gradlew
+            ./gradlew assembleDebug --stacktrace --no-daemon
+          else
+            echo "Gradle wrapper not found."
+            echo "Using installed Gradle 8.10.2"
+            gradle assembleDebug --stacktrace --no-daemon
+          fi
 
       - name: Upload SpamShield APK
         uses: actions/upload-artifact@v4
