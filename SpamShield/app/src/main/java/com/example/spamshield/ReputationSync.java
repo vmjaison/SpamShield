@@ -9,7 +9,7 @@ import java.util.*;
 /** User-triggered download, NEVER run on the call screening thread. */
 public final class ReputationSync {
  public static final String SOURCE="https://raw.githubusercontent.com/SysAdminDoc/CallShield/master/data/spam_numbers.json";
- private static final int MAX_BYTES=32*1024*1024;
+ private static final int MAX_BYTES=128*1024*1024;
  private ReputationSync(){}
  public static int sync(Context ctx) throws Exception {
   URL url=new URL(SOURCE);HttpURLConnection c=(HttpURLConnection)url.openConnection();
